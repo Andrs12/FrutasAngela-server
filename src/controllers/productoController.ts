@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import pool from '../database';
 
-class FruteriaController {
+class ProductoController {
 
     public async list (req: Request, res: Response) {
         await pool.query('SELECT * FROM PRODUCTO', function(err, result, fields) {
@@ -17,7 +17,7 @@ class FruteriaController {
         const producto = await pool.query('SELECT * FROM PRODUCTO WHERE id = ?',id, function(err, result, fields) {
             if (err) throw err;
             res.json(result);
-            console.log("Juego encontrado");
+            console.log("Producto encontrado");
         }); 
 
     } 
@@ -41,4 +41,4 @@ class FruteriaController {
     }
 }
 
-export const fruteriaController = new FruteriaController();
+export const productoController = new ProductoController();
