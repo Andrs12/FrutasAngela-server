@@ -7,7 +7,8 @@ var express_1 = __importDefault(require("express"));
 var morgan_1 = __importDefault(require("morgan"));
 var cors_1 = __importDefault(require("cors"));
 var indexRoutes_1 = __importDefault(require("./routes/indexRoutes"));
-var fruteriaRoutes_1 = __importDefault(require("./routes/fruteriaRoutes"));
+var productoRoutes_1 = __importDefault(require("./routes/productoRoutes"));
+var usuarioRoutes_1 = __importDefault(require("./routes/usuarioRoutes"));
 var Server = /** @class */ (function () {
     function Server() {
         this.app = express_1.default();
@@ -23,7 +24,8 @@ var Server = /** @class */ (function () {
     };
     Server.prototype.routes = function () {
         this.app.use('/', indexRoutes_1.default);
-        this.app.use('/api/fruteria', fruteriaRoutes_1.default);
+        this.app.use('/api/productos', productoRoutes_1.default);
+        this.app.use('/api/usuarios', usuarioRoutes_1.default);
     };
     Server.prototype.start = function () {
         var _this = this;

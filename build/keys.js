@@ -6,5 +6,8 @@ exports.default = {
         user: 'root',
         password: '',
         database: 'FRUTAS_ANGELA'
+    },
+    jwt: {
+        key: "pipo1234"
     }
 };

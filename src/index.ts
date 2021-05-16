@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import indexRoutes from './routes/indexRoutes';
-import productoRoutes from './routes/fruteriaRoutes';
+import productoRoutes from './routes/productoRoutes';
 import usuarioRoutes from './routes/usuarioRoutes';
 
 class Server {
@@ -33,9 +33,9 @@ class Server {
     start(): void {
         this.app.listen(this.app.get('port'), () => {
             console.log('Server on port ', this.app.get('port'));
-        });
+        }); 
     }
 }
-
+ 
 const server = new Server();
 server.start();
