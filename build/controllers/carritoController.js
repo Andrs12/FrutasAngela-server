@@ -39,111 +39,112 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productoController = void 0;
+exports.carritoController = void 0;
 var database_1 = __importDefault(require("../database"));
-var ProductoController = /** @class */ (function () {
-    function ProductoController() {
+var CarritoController = /** @class */ (function () {
+    function CarritoController() {
     }
-    ProductoController.prototype.list = function (req, res) {
+    CarritoController.prototype.getCarritoProductos = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1.default.query('SELECT * FROM PRODUCTO', function (err, result, fields) {
-                            if (err)
-                                throw err;
-                            res.json(result);
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ProductoController.prototype.getOne = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var id, producto;
+            var id, usuario;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
                         console.log(id);
-                        return [4 /*yield*/, database_1.default.query('SELECT * FROM PRODUCTO WHERE id = ?', id, function (err, result, fields) {
+                        return [4 /*yield*/, database_1.default.query('SELECT producto.ID, carrito_producto.ID as CARRITO_ID_PRODUCTO ,producto.NOMBRE, producto.PVP_UNIDAD, producto.IMAGEN ,carrito_producto.UNIDADES, (producto.PVP_UNIDAD*carrito_producto.UNIDADES) AS TOTAL FROM PRODUCTO, carrito_producto, carrito WHERE producto.ID = carrito_producto.ID_PRODUCTO AND carrito.ID = carrito_producto.CARRITO_ID AND CARRITO.ID =?', id, function (err, result, fields) {
                                 if (err)
                                     throw err;
+                                console.log(result);
                                 res.json(result);
-                                console.log("Producto encontrado");
+                                console.log("Productos carrito encontrado");
                             })];
                     case 1:
-                        producto = _a.sent();
+                        usuario = _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    ProductoController.prototype.getProductoTipos = function (req, res) {
+    CarritoController.prototype.insertarVenta = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var producto;
+            var datos, i;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1.default.query('SELECT * FROM TIPO_PRODUCTO', function (err, result, fields) {
-                            if (err)
-                                throw err;
-                            res.json(result);
-                            console.log("Tipos de producto encontrados");
-                        })];
-                    case 1:
-                        producto = _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ProductoController.prototype.create = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1.default.query('INSERT INTO PRODUCTO SET ?', [req.body])];
+                    case 0:
+                        datos = req.body;
+                        console.log(datos);
+                        console.log("INSERTANDO CARRITO EN VENTA");
+                        console.log(datos[datos.length - 1].ID_CARRITO);
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta`(`ID_DIRECCION`) VALUES (" + datos[datos.length - 1].ID_Direccion + ")")];
                     case 1:
                         _a.sent();
-                        res.json({ message: 'creando un producto' });
+                        console.log("VENTA INSERTADA");
+                        i = 0;
+                        _a.label = 2;
+                    case 2:
+                        if (!(i < datos.length)) return [3 /*break*/, 5];
+                        if (!(datos[i].ID_Direccion == null)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta_producto`(`ID_VENTA`, `ID_PRODUCTO`, `CANTIDAD`) VALUES ((SELECT MAX(ID) FROM venta) ," + datos[i].ID + "," + datos[i].UNIDADES + ")")];
+                    case 3:
+                        _a.sent();
+                        console.log("PRODUCTO_VENTA INSERTADO");
+                        _a.label = 4;
+                    case 4:
+                        i++;
+                        return [3 /*break*/, 2];
+                    case 5:
+                        console.log("Productos Insertados");
+                        return [4 /*yield*/, database_1.default.query("DELETE FROM `CARRITO_PRODUCTO` WHERE CARRITO_ID = " + datos[datos.length - 1].ID_Carrito)];
+                    case 6:
+                        _a.sent();
+                        console.log("Produtos carro " + datos[datos.length - 1].ID_Carrito + "eliminados");
+                        console.log("Compla completada");
                         return [2 /*return*/];
                 }
             });
         });
     };
-    ProductoController.prototype.delete = function (req, res) {
+    CarritoController.prototype.insertarVentaProducto = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    CarritoController.prototype.insertarProductoCarro = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var datos;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        datos = req.body;
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `carrito_producto`(`ID_PRODUCTO`, `UNIDADES`, `CARRITO_ID`) VALUES (" + datos.ID_PRODUCTO + "," + datos.UNIDADES + "," + datos.CARRITO_ID + ")")];
+                    case 1:
+                        _a.sent();
+                        res.json({ message: "Producto insertado" });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CarritoController.prototype.eliminarProductoCarro = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        return [4 /*yield*/, database_1.default.query('DELETE FROM PRODUCTO WHERE ID = ?', [id])];
+                        console.log(id);
+                        return [4 /*yield*/, database_1.default.query("DELETE FROM `carrito_producto` WHERE ID = " + id)];
                     case 1:
                         _a.sent();
-                        res.json({ text: 'Producto borrado: ' + req.params.id });
+                        res.json({ message: "Producto eliminado del carrito" });
                         return [2 /*return*/];
                 }
             });
         });
     };
-    ProductoController.prototype.udpate = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var id;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        id = req.params.id;
-                        return [4 /*yield*/, database_1.default.query('UPDATE PRODUCTO SET ? WHERE ID = ?', [req.body, id])];
-                    case 1:
-                        _a.sent();
-                        res.json({ message: 'Producto actualizado' });
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return ProductoController;
+    return CarritoController;
 }());
-exports.productoController = new ProductoController();
+exports.carritoController = new CarritoController();

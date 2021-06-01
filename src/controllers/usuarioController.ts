@@ -25,10 +25,23 @@ class UsuarioController {
 
     }
 
+    public async getOneByToken(req: Request, res: Response): Promise<void> {
+        var jwt = require('jsonwebtoken');
+        var decoded = jwt.verify(req.body.token, keys.jwt.key);
+        res.json(decoded)
+
+    }
+
     public async create(req: Request, res: Response): Promise<void> {
         await pool.query('INSERT INTO USUARIO SET ?', [req.body]);
         console.log(req.body)
         res.json({ message: 'Creando un usuario' });
+    }
+
+    public async createCarro(req: Request, res: Response): Promise<void> {
+        await pool.query('INSERT INTO carrito VALUES()');
+        console.log(req.body)
+        res.json({ message: 'Carrito Creado' });
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
@@ -49,14 +62,17 @@ class UsuarioController {
         var usuario;
         const consulta = await pool.query("SELECT * FROM USUARIO WHERE email = \'" + email + "\' and contrasena = \'" + contrasena + "\'", function (err, result, fields) {
             if (err) throw err;
-            if(result[0]!=null){
-                usuario ={
-                    nombre: result[0].NOMBRE, 
+            if (result[0] != null) {
+                usuario = {
+                    id: result[0].ID,
+                    nombre: result[0].NOMBRE,
                     apellido1: result[0].APELLIDO1,
                     apellido2: result[0].APELLIDO2,
                     telefono: result.TELEFONO,
                     email: result[0].EMAIL,
-                    contrasena: result[0].CONTRASENA
+                    contrasena: result[0].CONTRASENA,
+                    rol: result[0].ROL,
+                    carro: result[0].ID_CARRITO 
                 }
                 try {
                     var jwt = require('jsonwebtoken');
@@ -67,45 +83,70 @@ class UsuarioController {
                     res.json({ message: "No se ha podido encriptar" });
                 }
             } else {
-                res.json({message: "usuario invalido"});
+                res.json({ message: "usuario invalido" });
             }
-            
+
         });
-        
-       
+
+
     }
 
-    public async register(req: Request, res: Response): Promise<void> {
-        var usuario;
-
+    public async getDirecciones(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+        console.log(id);
+        const usuario = await pool.query('SELECT * FROM DIRECCION WHERE ID_USUARIO = ?', id, function (err, result, fields) {
+            if (err) throw err;
+            res.json(result);
+            console.log("Direcciones del usuario:",id,"encontradas");
+        });
+    }
+    public async register(req: Request, res: Response): Promise<void> {  
+        var usuario: any;
         try {
-            usuario = ({
-                nombre: req.body.nombre,
-                apellido1: req.body.apellido1,
-                apellido2: req.body.apellido2,
-                telefono: req.body.telefono,
-                email: req.body.email,
-                contrasena: req.body.contrasena
-            });
-            console.log(usuario);
-            await pool.query('INSERT INTO USUARIO SET ?', usuario);
-            console.log("INSERTADO");
-
+                usuario = ({
+                    nombre: req.body.nombre,
+                    apellido1: req.body.apellido1,
+                    apellido2: req.body.apellido2,
+                    telefono: req.body.telefono,
+                    email: req.body.email,
+                    contrasena: req.body.contrasena,
+                    rol: req.body.rol
+                });
+                await pool.query("INSERT INTO `usuario` (`NOMBRE`, `APELLIDO1`, `APELLIDO2`, `TELEFONO`, `EMAIL`, `CONTRASENA`, `ROL`, `ID_CARRITO`) VALUES ('"+usuario.nombre+"', '"+usuario.apellido1+"', '"+usuario.apellido2+"', '"+usuario.telefono+"', '"+usuario.email+"', '"+usuario.contrasena+"', 2, (SELECT max(id) from usuario as us))");
+                console.log("USUARIO INSERTADO----");
+                try {
+                    console.log(usuario) 
+                    var jwt = require('jsonwebtoken');
+                    const token = jwt.sign(usuario, keys.jwt.key);
+                    res.json(({ token: token }));
+                } catch (error) {
+                    console.log("ERROR al encriptar");
+                    res.json(({ message: "No se ha podido encriptar" }));
+                }
         } catch (error) {
             console.log("ERROR al realizar la insercion");
         }
+
+    }
+    /* METODOS DE AYUDA */
+    public encriptar(usuario: any) {
         try {
+            console.log(usuario)
             var jwt = require('jsonwebtoken');
             const token = jwt.sign(usuario, keys.jwt.key);
-            res.json({ token: token });
+            return ({ token: token });
         } catch (error) {
             console.log("ERROR al encriptar");
-            res.json({ message: "No se ha podido encriptar" });
+            return ({ message: "No se ha podido encriptar" });
         }
     }
 
-
-
+    public async crearCarrito(req: Request, res: Response): Promise<void>{
+       await pool.query('INSERT INTO CARRITO VALUES()');
+       res.json({message: "Carrito creado"});
+    }
+    
+    
 }
 
 export const usuarioController = new UsuarioController();

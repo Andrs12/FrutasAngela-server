@@ -10,11 +10,14 @@ var UsuarioRoutes = /** @class */ (function () {
     UsuarioRoutes.prototype.config = function () {
         this.router.get('/', usuarioController_1.usuarioController.list);
         this.router.get('/:id', usuarioController_1.usuarioController.getOne);
+        this.router.get('/direcciones/:id', usuarioController_1.usuarioController.getDirecciones);
         this.router.post('/', usuarioController_1.usuarioController.create);
         this.router.delete('/:id', usuarioController_1.usuarioController.delete);
         this.router.put('/:id', usuarioController_1.usuarioController.udpate);
         this.router.post('/login', usuarioController_1.usuarioController.login);
         this.router.post('/register', usuarioController_1.usuarioController.register);
+        this.router.post('/descifrar', usuarioController_1.usuarioController.getOneByToken);
+        this.router.post('/createCarro', usuarioController_1.usuarioController.createCarro);
     };
     return UsuarioRoutes;
 }());

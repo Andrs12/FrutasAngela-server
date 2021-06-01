@@ -82,6 +82,17 @@ var UsuarioController = /** @class */ (function () {
             });
         });
     };
+    UsuarioController.prototype.getOneByToken = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var jwt, decoded;
+            return __generator(this, function (_a) {
+                jwt = require('jsonwebtoken');
+                decoded = jwt.verify(req.body.token, keys_1.default.jwt.key);
+                res.json(decoded);
+                return [2 /*return*/];
+            });
+        });
+    };
     UsuarioController.prototype.create = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -91,6 +102,20 @@ var UsuarioController = /** @class */ (function () {
                         _a.sent();
                         console.log(req.body);
                         res.json({ message: 'Creando un usuario' });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsuarioController.prototype.createCarro = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, database_1.default.query('INSERT INTO carrito VALUES()')];
+                    case 1:
+                        _a.sent();
+                        console.log(req.body);
+                        res.json({ message: 'Carrito Creado' });
                         return [2 /*return*/];
                 }
             });
@@ -141,12 +166,15 @@ var UsuarioController = /** @class */ (function () {
                                     throw err;
                                 if (result[0] != null) {
                                     usuario = {
+                                        id: result[0].ID,
                                         nombre: result[0].NOMBRE,
                                         apellido1: result[0].APELLIDO1,
                                         apellido2: result[0].APELLIDO2,
                                         telefono: result.TELEFONO,
                                         email: result[0].EMAIL,
-                                        contrasena: result[0].CONTRASENA
+                                        contrasena: result[0].CONTRASENA,
+                                        rol: result[0].ROL,
+                                        carro: result[0].ID_CARRITO
                                     };
                                     try {
                                         var jwt = require('jsonwebtoken');
@@ -169,9 +197,30 @@ var UsuarioController = /** @class */ (function () {
             });
         });
     };
+    UsuarioController.prototype.getDirecciones = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, usuario;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        id = req.params.id;
+                        console.log(id);
+                        return [4 /*yield*/, database_1.default.query('SELECT * FROM DIRECCION WHERE ID_USUARIO = ?', id, function (err, result, fields) {
+                                if (err)
+                                    throw err;
+                                res.json(result);
+                                console.log("Direcciones del usuario:", id, "encontradas");
+                            })];
+                    case 1:
+                        usuario = _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     UsuarioController.prototype.register = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var usuario, error_1, jwt, token_2;
+            var usuario, jwt, token_2, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -182,28 +231,54 @@ var UsuarioController = /** @class */ (function () {
                             apellido2: req.body.apellido2,
                             telefono: req.body.telefono,
                             email: req.body.email,
-                            contrasena: req.body.contrasena
+                            contrasena: req.body.contrasena,
+                            rol: req.body.rol
                         });
-                        console.log(usuario);
-                        return [4 /*yield*/, database_1.default.query('INSERT INTO USUARIO SET ?', usuario)];
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `usuario` (`NOMBRE`, `APELLIDO1`, `APELLIDO2`, `TELEFONO`, `EMAIL`, `CONTRASENA`, `ROL`, `ID_CARRITO`) VALUES ('" + usuario.nombre + "', '" + usuario.apellido1 + "', '" + usuario.apellido2 + "', '" + usuario.telefono + "', '" + usuario.email + "', '" + usuario.contrasena + "', 2, (SELECT max(id) from usuario as us))")];
                     case 1:
                         _a.sent();
-                        console.log("INSERTADO");
+                        console.log("USUARIO INSERTADO----");
+                        try {
+                            console.log(usuario);
+                            jwt = require('jsonwebtoken');
+                            token_2 = jwt.sign(usuario, keys_1.default.jwt.key);
+                            res.json(({ token: token_2 }));
+                        }
+                        catch (error) {
+                            console.log("ERROR al encriptar");
+                            res.json(({ message: "No se ha podido encriptar" }));
+                        }
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
                         console.log("ERROR al realizar la insercion");
                         return [3 /*break*/, 3];
-                    case 3:
-                        try {
-                            jwt = require('jsonwebtoken');
-                            token_2 = jwt.sign(usuario, keys_1.default.jwt.key);
-                            res.json({ token: token_2 });
-                        }
-                        catch (error) {
-                            console.log("ERROR al encriptar");
-                            res.json({ message: "No se ha podido encriptar" });
-                        }
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /* METODOS DE AYUDA */
+    UsuarioController.prototype.encriptar = function (usuario) {
+        try {
+            console.log(usuario);
+            var jwt = require('jsonwebtoken');
+            var token_3 = jwt.sign(usuario, keys_1.default.jwt.key);
+            return ({ token: token_3 });
+        }
+        catch (error) {
+            console.log("ERROR al encriptar");
+            return ({ message: "No se ha podido encriptar" });
+        }
+    };
+    UsuarioController.prototype.crearCarrito = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, database_1.default.query('INSERT INTO CARRITO VALUES()')];
+                    case 1:
+                        _a.sent();
+                        res.json({ message: "Carrito creado" });
                         return [2 /*return*/];
                 }
             });

@@ -13,14 +13,18 @@ class UsuarioRoutes {
     config(): void {
         this.router.get('/', usuarioController.list);
         this.router.get('/:id', usuarioController.getOne);
+        this.router.get('/direcciones/:id', usuarioController.getDirecciones);
         this.router.post('/',usuarioController.create);
         this.router.delete('/:id',usuarioController.delete);
         this.router.put('/:id',usuarioController.udpate);
         this.router.post('/login',usuarioController.login);
         this.router.post('/register',usuarioController.register);
+        this.router.post('/descifrar', usuarioController.getOneByToken);
+        this.router.post('/createCarro', usuarioController.createCarro);
+
 
     }
 }
 
 const usuarioRoutes = new UsuarioRoutes();
-export default usuarioRoutes.router;
+export default usuarioRoutes.router; 

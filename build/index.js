@@ -9,6 +9,7 @@ var cors_1 = __importDefault(require("cors"));
 var indexRoutes_1 = __importDefault(require("./routes/indexRoutes"));
 var productoRoutes_1 = __importDefault(require("./routes/productoRoutes"));
 var usuarioRoutes_1 = __importDefault(require("./routes/usuarioRoutes"));
+var carritoRoutes_1 = __importDefault(require("./routes/carritoRoutes"));
 var Server = /** @class */ (function () {
     function Server() {
         this.app = express_1.default();
@@ -26,6 +27,7 @@ var Server = /** @class */ (function () {
         this.app.use('/', indexRoutes_1.default);
         this.app.use('/api/productos', productoRoutes_1.default);
         this.app.use('/api/usuarios', usuarioRoutes_1.default);
+        this.app.use('/api/carrito', carritoRoutes_1.default);
     };
     Server.prototype.start = function () {
         var _this = this;

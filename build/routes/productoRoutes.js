@@ -9,6 +9,7 @@ var ProductoRoutes = /** @class */ (function () {
     }
     ProductoRoutes.prototype.config = function () {
         this.router.get('/', productoController_1.productoController.list);
+        this.router.get('/tiposProducto', productoController_1.productoController.getProductoTipos);
         this.router.get('/:id', productoController_1.productoController.getOne);
         this.router.post('/', productoController_1.productoController.create);
         this.router.delete('/:id', productoController_1.productoController.delete);
