@@ -13,7 +13,6 @@ class ProductoController {
 
     public async getOne(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
-        console.log(id);
         const producto = await pool.query('SELECT * FROM PRODUCTO WHERE id = ?', id, function (err, result, fields) {
             if (err) throw err;
             res.json(result);
@@ -22,6 +21,15 @@ class ProductoController {
 
     }
 
+    public async getOneLike(req: Request, res: Response): Promise<void> {
+        const { nombre } = req.params;
+        const producto = await pool.query("SELECT * FROM `producto` WHERE NOMBRE like '%"+nombre+"%'", function (err, result, fields) {
+            if (err) throw err;
+            res.json(result);
+            console.log("Producto encontrado");
+        });
+
+    }
     public async getProductoTipos(req: Request, res: Response): Promise<void> {
 
         const producto = await pool.query('SELECT * FROM TIPO_PRODUCTO', function (err, result, fields) {

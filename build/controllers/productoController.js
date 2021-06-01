@@ -67,8 +67,27 @@ var ProductoController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        console.log(id);
                         return [4 /*yield*/, database_1.default.query('SELECT * FROM PRODUCTO WHERE id = ?', id, function (err, result, fields) {
+                                if (err)
+                                    throw err;
+                                res.json(result);
+                                console.log("Producto encontrado");
+                            })];
+                    case 1:
+                        producto = _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductoController.prototype.getOneLike = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var nombre, producto;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        nombre = req.params.nombre;
+                        return [4 /*yield*/, database_1.default.query("SELECT * FROM `producto` WHERE NOMBRE like '%" + nombre + "%'", function (err, result, fields) {
                                 if (err)
                                     throw err;
                                 res.json(result);

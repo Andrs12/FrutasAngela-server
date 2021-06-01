@@ -11,6 +11,7 @@ var ProductoRoutes = /** @class */ (function () {
         this.router.get('/', productoController_1.productoController.list);
         this.router.get('/tiposProducto', productoController_1.productoController.getProductoTipos);
         this.router.get('/:id', productoController_1.productoController.getOne);
+        this.router.get('/nombre/:nombre', productoController_1.productoController.getOneLike);
         this.router.post('/', productoController_1.productoController.create);
         this.router.delete('/:id', productoController_1.productoController.delete);
         this.router.put('/:id', productoController_1.productoController.udpate);
