@@ -23,7 +23,7 @@ class ProductoController {
 
     public async getOneLike(req: Request, res: Response): Promise<void> {
         const { nombre } = req.params;
-        const producto = await pool.query("SELECT * FROM `producto` WHERE NOMBRE like '%"+nombre+"%'", function (err, result, fields) {
+        const producto = await pool.query("SELECT * FROM `producto` WHERE nombre like '%"+nombre+"%'", function (err, result, fields) {
             if (err) throw err;
             res.json(result);
             console.log("Producto encontrado");
@@ -32,7 +32,7 @@ class ProductoController {
     }
     public async getProductoTipos(req: Request, res: Response): Promise<void> {
 
-        const producto = await pool.query('SELECT * FROM TIPO_PRODUCTO', function (err, result, fields) {
+        const producto = await pool.query('SELECT * FROM tipo_producto', function (err, result, fields) {
             if (err) throw err;
             res.json(result);
             console.log("Tipos de producto encontrados");
@@ -42,19 +42,21 @@ class ProductoController {
 
 
     public async create(req: Request, res: Response): Promise<void> {
-        await pool.query('INSERT INTO PRODUCTO SET ?', [req.body]);
+        const producto = req.body
+        console.log(producto);
+        await pool.query("INSERT INTO `producto`(`nombre`, `tipo_producto`, `descripcion`, `pvp_unidad`, `stock`, `imagen`) VALUES ('"+producto.nombre+"',"+producto.tipo_producto+",'"+producto.descripcion+"',"+producto.pvp_unidad+","+producto.stock+",'"+producto.imagen+"')");
         res.json({ message: 'creando un producto' });
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
-        await pool.query('DELETE FROM PRODUCTO WHERE ID = ?', [id]);
+        await pool.query('DELETE FROM PRODUCTO WHERE id = ?', [id]);
         res.json({ text: 'Producto borrado: ' + req.params.id });
     }
 
     public async udpate(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
-        await pool.query('UPDATE PRODUCTO SET ? WHERE ID = ?', [req.body, id]);
+        const producto = req.body
+        await pool.query('UPDATE PRODUCTO SET ? WHERE id = ?', [producto, producto.id]);
         res.json({ message: 'Producto actualizado' });
     }
 }

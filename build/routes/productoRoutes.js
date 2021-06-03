@@ -14,7 +14,7 @@ var ProductoRoutes = /** @class */ (function () {
         this.router.get('/nombre/:nombre', productoController_1.productoController.getOneLike);
         this.router.post('/', productoController_1.productoController.create);
         this.router.delete('/:id', productoController_1.productoController.delete);
-        this.router.put('/:id', productoController_1.productoController.udpate);
+        this.router.put('/', productoController_1.productoController.udpate);
     };
     return ProductoRoutes;
 }());

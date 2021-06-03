@@ -128,7 +128,7 @@ var UsuarioController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        return [4 /*yield*/, database_1.default.query('DELETE FROM USUARIO WHERE ID = ?', [id])];
+                        return [4 /*yield*/, database_1.default.query('DELETE FROM USUARIO WHERE id = ?', [id])];
                     case 1:
                         _a.sent();
                         res.json({ text: 'Usuario borrado: ' + req.params.id });
@@ -139,14 +139,16 @@ var UsuarioController = /** @class */ (function () {
     };
     UsuarioController.prototype.udpate = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var id;
+            var usuario;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.params.id;
-                        return [4 /*yield*/, database_1.default.query('UPDATE USUARIO SET ? WHERE ID = ?', [req.body, id])];
+                        usuario = req.body;
+                        console.log(usuario);
+                        return [4 /*yield*/, database_1.default.query('UPDATE USUARIO SET ? WHERE id = ?', [usuario, usuario.id])];
                     case 1:
                         _a.sent();
+                        console.log("Usuario actualizado");
                         res.json({ message: 'Usuario actualizado' });
                         return [2 /*return*/];
                 }
@@ -165,17 +167,7 @@ var UsuarioController = /** @class */ (function () {
                                 if (err)
                                     throw err;
                                 if (result[0] != null) {
-                                    usuario = {
-                                        id: result[0].ID,
-                                        nombre: result[0].NOMBRE,
-                                        apellido1: result[0].APELLIDO1,
-                                        apellido2: result[0].APELLIDO2,
-                                        telefono: result.TELEFONO,
-                                        email: result[0].EMAIL,
-                                        contrasena: result[0].CONTRASENA,
-                                        rol: result[0].ROL,
-                                        carro: result[0].ID_CARRITO
-                                    };
+                                    usuario = result[0];
                                     try {
                                         var jwt = require('jsonwebtoken');
                                         var token_1 = jwt.sign(usuario, keys_1.default.jwt.key);
@@ -204,8 +196,7 @@ var UsuarioController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        console.log(id);
-                        return [4 /*yield*/, database_1.default.query('SELECT * FROM DIRECCION WHERE ID_USUARIO = ?', id, function (err, result, fields) {
+                        return [4 /*yield*/, database_1.default.query('SELECT * FROM DIRECCION WHERE id_usuario = ?', id, function (err, result, fields) {
                                 if (err)
                                     throw err;
                                 res.json(result);
@@ -218,6 +209,39 @@ var UsuarioController = /** @class */ (function () {
             });
         });
     };
+    UsuarioController.prototype.insertarDireccion = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var direccion;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        direccion = req.body;
+                        console.log(direccion);
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `direccion`(`direccion`, `id_usuario`) VALUES ('" + direccion.direccion + "'," + direccion.idUsuario + ")")];
+                    case 1:
+                        _a.sent();
+                        res.json({ message: "Direccion insertada" });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsuarioController.prototype.eliminarDireccion = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        id = req.params.id;
+                        return [4 /*yield*/, database_1.default.query("DELETE FROM `direccion` WHERE id = " + id)];
+                    case 1:
+                        _a.sent();
+                        res.json({ message: "Direccion eliminada" });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     UsuarioController.prototype.register = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var usuario, jwt, token_2, error_1;
@@ -225,16 +249,8 @@ var UsuarioController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        usuario = ({
-                            nombre: req.body.nombre,
-                            apellido1: req.body.apellido1,
-                            apellido2: req.body.apellido2,
-                            telefono: req.body.telefono,
-                            email: req.body.email,
-                            contrasena: req.body.contrasena,
-                            rol: req.body.rol
-                        });
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `usuario` (`NOMBRE`, `APELLIDO1`, `APELLIDO2`, `TELEFONO`, `EMAIL`, `CONTRASENA`, `ROL`, `ID_CARRITO`) VALUES ('" + usuario.nombre + "', '" + usuario.apellido1 + "', '" + usuario.apellido2 + "', '" + usuario.telefono + "', '" + usuario.email + "', '" + usuario.contrasena + "', 2, (SELECT max(id) from usuario as us))")];
+                        usuario = req.body;
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `usuario` (`nombre`, `apellido1`, `apellido2`, `telefono`, `email`, `contrasena`, `rol`, `id_carrito`) VALUES ('" + usuario.nombre + "', '" + usuario.apellido1 + "', '" + usuario.apellido2 + "', '" + usuario.telefono + "', '" + usuario.email + "', '" + usuario.contrasena + "', 2, (SELECT max(id) from usuario as us))")];
                     case 1:
                         _a.sent();
                         console.log("USUARIO INSERTADO----");

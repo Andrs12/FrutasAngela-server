@@ -87,7 +87,7 @@ var ProductoController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         nombre = req.params.nombre;
-                        return [4 /*yield*/, database_1.default.query("SELECT * FROM `producto` WHERE NOMBRE like '%" + nombre + "%'", function (err, result, fields) {
+                        return [4 /*yield*/, database_1.default.query("SELECT * FROM `producto` WHERE nombre like '%" + nombre + "%'", function (err, result, fields) {
                                 if (err)
                                     throw err;
                                 res.json(result);
@@ -105,7 +105,7 @@ var ProductoController = /** @class */ (function () {
             var producto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1.default.query('SELECT * FROM TIPO_PRODUCTO', function (err, result, fields) {
+                    case 0: return [4 /*yield*/, database_1.default.query('SELECT * FROM tipo_producto', function (err, result, fields) {
                             if (err)
                                 throw err;
                             res.json(result);
@@ -120,9 +120,13 @@ var ProductoController = /** @class */ (function () {
     };
     ProductoController.prototype.create = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var producto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1.default.query('INSERT INTO PRODUCTO SET ?', [req.body])];
+                    case 0:
+                        producto = req.body;
+                        console.log(producto);
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `producto`(`nombre`, `tipo_producto`, `descripcion`, `pvp_unidad`, `stock`, `imagen`) VALUES ('" + producto.nombre + "'," + producto.tipo_producto + ",'" + producto.descripcion + "'," + producto.pvp_unidad + "," + producto.stock + ",'" + producto.imagen + "')")];
                     case 1:
                         _a.sent();
                         res.json({ message: 'creando un producto' });
@@ -138,7 +142,7 @@ var ProductoController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        return [4 /*yield*/, database_1.default.query('DELETE FROM PRODUCTO WHERE ID = ?', [id])];
+                        return [4 /*yield*/, database_1.default.query('DELETE FROM PRODUCTO WHERE id = ?', [id])];
                     case 1:
                         _a.sent();
                         res.json({ text: 'Producto borrado: ' + req.params.id });
@@ -149,12 +153,12 @@ var ProductoController = /** @class */ (function () {
     };
     ProductoController.prototype.udpate = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var id;
+            var producto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.params.id;
-                        return [4 /*yield*/, database_1.default.query('UPDATE PRODUCTO SET ? WHERE ID = ?', [req.body, id])];
+                        producto = req.body;
+                        return [4 /*yield*/, database_1.default.query('UPDATE PRODUCTO SET ? WHERE id = ?', [producto, producto.id])];
                     case 1:
                         _a.sent();
                         res.json({ message: 'Producto actualizado' });

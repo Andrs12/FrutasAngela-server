@@ -52,7 +52,7 @@ var CarritoController = /** @class */ (function () {
                     case 0:
                         id = req.params.id;
                         console.log(id);
-                        return [4 /*yield*/, database_1.default.query('SELECT producto.ID, carrito_producto.ID as CARRITO_ID_PRODUCTO ,producto.NOMBRE, producto.PVP_UNIDAD, producto.IMAGEN ,carrito_producto.UNIDADES, (producto.PVP_UNIDAD*carrito_producto.UNIDADES) AS TOTAL FROM PRODUCTO, carrito_producto, carrito WHERE producto.ID = carrito_producto.ID_PRODUCTO AND carrito.ID = carrito_producto.CARRITO_ID AND CARRITO.ID =?', id, function (err, result, fields) {
+                        return [4 /*yield*/, database_1.default.query('SELECT producto.id, carrito_producto.id as carrito_id_producto ,producto.nombre, producto.pvp_unidad, producto.imagen ,carrito_producto.unidades, (producto.pvp_unidad*carrito_producto.unidades) AS total FROM producto, carrito_producto, carrito WHERE producto.id = carrito_producto.id_producto AND carrito.id = carrito_producto.carrito_id AND carrito.id =?', id, function (err, result, fields) {
                                 if (err)
                                     throw err;
                                 console.log(result);
@@ -75,8 +75,8 @@ var CarritoController = /** @class */ (function () {
                         datos = req.body;
                         console.log(datos);
                         console.log("INSERTANDO CARRITO EN VENTA");
-                        console.log(datos[datos.length - 1].ID_CARRITO);
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta`(`ID_DIRECCION`) VALUES (" + datos[datos.length - 1].ID_Direccion + ")")];
+                        console.log(datos[datos.length - 1].id_carrito);
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta`(`ID_DIRECCION`) VALUES (" + datos[datos.length - 1].id_direccion + ")")];
                     case 1:
                         _a.sent();
                         console.log("VENTA INSERTADA");
@@ -85,7 +85,7 @@ var CarritoController = /** @class */ (function () {
                     case 2:
                         if (!(i < datos.length)) return [3 /*break*/, 5];
                         if (!(datos[i].ID_Direccion == null)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta_producto`(`ID_VENTA`, `ID_PRODUCTO`, `CANTIDAD`) VALUES ((SELECT MAX(ID) FROM venta) ," + datos[i].ID + "," + datos[i].UNIDADES + ")")];
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta_producto`(`ID_VENTA`, `ID_PRODUCTO`, `CANTIDAD`) VALUES ((SELECT MAX(ID) FROM venta) ," + datos[i].id + "," + datos[i].unidades + ")")];
                     case 3:
                         _a.sent();
                         console.log("PRODUCTO_VENTA INSERTADO");
@@ -95,10 +95,10 @@ var CarritoController = /** @class */ (function () {
                         return [3 /*break*/, 2];
                     case 5:
                         console.log("Productos Insertados");
-                        return [4 /*yield*/, database_1.default.query("DELETE FROM `CARRITO_PRODUCTO` WHERE CARRITO_ID = " + datos[datos.length - 1].ID_Carrito)];
+                        return [4 /*yield*/, database_1.default.query("DELETE FROM `CARRITO_PRODUCTO` WHERE CARRITO_ID = " + datos[datos.length - 1].id_carrito)];
                     case 6:
                         _a.sent();
-                        console.log("Produtos carro " + datos[datos.length - 1].ID_Carrito + "eliminados");
+                        console.log("Produtos carro " + datos[datos.length - 1].id_carrito + "eliminados");
                         console.log("Compla completada");
                         return [2 /*return*/];
                 }
@@ -119,7 +119,7 @@ var CarritoController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         datos = req.body;
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `carrito_producto`(`ID_PRODUCTO`, `UNIDADES`, `CARRITO_ID`) VALUES (" + datos.ID_PRODUCTO + "," + datos.UNIDADES + "," + datos.CARRITO_ID + ")")];
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `carrito_producto`(`id_producto`, `unidades`, `carrito_id`) VALUES (" + datos.id_producto + "," + datos.unidades + "," + datos.carrito_id + ")")];
                     case 1:
                         _a.sent();
                         res.json({ message: "Producto insertado" });
