@@ -57,20 +57,34 @@ class UsuarioController {
         console.log("Usuario actualizado")
         res.json({ message: 'Usuario actualizado' });
     }
-
+ 
     public async login(req: Request, res: Response): Promise<void> {
         const email = req.body.email;
         const contrasena = req.body.contrasena;
         var usuario;
-        const consulta = await pool.query("SELECT * FROM USUARIO WHERE email = \'" + email + "\' and contrasena = \'" + contrasena + "\'", function (err, result, fields) {
+        console.log(email,contrasena);
+        const consulta = await pool.query("SELECT * FROM USUARIO WHERE email = '" + email + "' and contrasena = '" + contrasena + "'", function (err, result, fields) {
             if (err) throw err;
             if (result[0] != null) {
-                usuario = result[0];
+                usuario = {
+                    id: result[0].id,
+                    nombre: result[0].nombre,
+                    apellido1: result[0].apellido1,
+                    apellido2: result[0].apellido2,
+                    telefono: result[0].telefono,
+                    email: result[0].email,
+                    contrasena: result[0].contrasena,
+                    rol: result[0].rol,
+                    id_carrito: result[0].id_carrito
+                }
                 try {
                     var jwt = require('jsonwebtoken');
                     const token = jwt.sign(usuario, keys.jwt.key);
+                    console.log("token firmado")
+                    console.log(token)
                     res.json({ token: token });
                 } catch (error) {
+                    console.log(error)
                     console.log("ERROR al encriptar");
                     res.json({ message: "No se ha podido encriptar" });
                 }
@@ -78,7 +92,7 @@ class UsuarioController {
                 res.json({ message: "usuario invalido" });
             }
 
-        });
+        });  
 
 
     }

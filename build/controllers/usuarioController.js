@@ -163,17 +163,31 @@ var UsuarioController = /** @class */ (function () {
                     case 0:
                         email = req.body.email;
                         contrasena = req.body.contrasena;
-                        return [4 /*yield*/, database_1.default.query("SELECT * FROM USUARIO WHERE email = \'" + email + "\' and contrasena = \'" + contrasena + "\'", function (err, result, fields) {
+                        console.log(email, contrasena);
+                        return [4 /*yield*/, database_1.default.query("SELECT * FROM USUARIO WHERE email = '" + email + "' and contrasena = '" + contrasena + "'", function (err, result, fields) {
                                 if (err)
                                     throw err;
                                 if (result[0] != null) {
-                                    usuario = result[0];
+                                    usuario = {
+                                        id: result[0].id,
+                                        nombre: result[0].nombre,
+                                        apellido1: result[0].apellido1,
+                                        apellido2: result[0].apellido2,
+                                        telefono: result[0].telefono,
+                                        email: result[0].email,
+                                        contrasena: result[0].contrasena,
+                                        rol: result[0].rol,
+                                        id_carrito: result[0].id_carrito
+                                    };
                                     try {
                                         var jwt = require('jsonwebtoken');
                                         var token_1 = jwt.sign(usuario, keys_1.default.jwt.key);
+                                        console.log("token firmado");
+                                        console.log(token_1);
                                         res.json({ token: token_1 });
                                     }
                                     catch (error) {
+                                        console.log(error);
                                         console.log("ERROR al encriptar");
                                         res.json({ message: "No se ha podido encriptar" });
                                     }

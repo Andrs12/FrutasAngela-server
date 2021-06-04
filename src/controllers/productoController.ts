@@ -51,13 +51,13 @@ class ProductoController {
     public async delete(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
         await pool.query('DELETE FROM PRODUCTO WHERE id = ?', [id]);
-        res.json({ text: 'Producto borrado: ' + req.params.id });
+        res.json({ message: 'Producto borrado: ' + req.params.id });
     }
 
     public async udpate(req: Request, res: Response): Promise<void> {
         const producto = req.body
         await pool.query('UPDATE PRODUCTO SET ? WHERE id = ?', [producto, producto.id]);
-        res.json({ message: 'Producto actualizado' });
+        res.json({ message: 'Producto actualizado correctamente' });
     }
 }
 

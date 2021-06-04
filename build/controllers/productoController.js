@@ -145,7 +145,7 @@ var ProductoController = /** @class */ (function () {
                         return [4 /*yield*/, database_1.default.query('DELETE FROM PRODUCTO WHERE id = ?', [id])];
                     case 1:
                         _a.sent();
-                        res.json({ text: 'Producto borrado: ' + req.params.id });
+                        res.json({ message: 'Producto borrado: ' + req.params.id });
                         return [2 /*return*/];
                 }
             });
@@ -161,7 +161,7 @@ var ProductoController = /** @class */ (function () {
                         return [4 /*yield*/, database_1.default.query('UPDATE PRODUCTO SET ? WHERE id = ?', [producto, producto.id])];
                     case 1:
                         _a.sent();
-                        res.json({ message: 'Producto actualizado' });
+                        res.json({ message: 'Producto actualizado correctamente' });
                         return [2 /*return*/];
                 }
             });
