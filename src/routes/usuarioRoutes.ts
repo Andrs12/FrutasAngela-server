@@ -15,7 +15,6 @@ class UsuarioRoutes {
         this.router.get('/:id', usuarioController.getOne);
         this.router.get('/direcciones/:id', usuarioController.getDirecciones);
         this.router.delete('/direcciones/:id', usuarioController.eliminarDireccion);
-
         this.router.post('/',usuarioController.create);
         this.router.post('/direcciones',usuarioController.insertarDireccion);
         this.router.delete('/:id',usuarioController.delete);
@@ -23,11 +22,10 @@ class UsuarioRoutes {
         this.router.post('/login',usuarioController.login);
         this.router.post('/register',usuarioController.register);
         this.router.post('/descifrar', usuarioController.getOneByToken);
-        this.router.post('/createCarro', usuarioController.createCarro);
 
 
     }
 }
 
 const usuarioRoutes = new UsuarioRoutes();
-export default usuarioRoutes.router; 
+export default usuarioRoutes.router;  

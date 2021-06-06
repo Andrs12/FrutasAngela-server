@@ -5,7 +5,7 @@ exports.default = {
         host: 'localhost',
         user: 'root',
         password: '',
-        database: 'FRUTAS_ANGELA'
+        database: 'frutas_angela'
     },
     jwt: {
         key: "pipo1234"

@@ -16,7 +16,6 @@ class ProductoController {
         const producto = await pool.query('SELECT * FROM PRODUCTO WHERE id = ?', id, function (err, result, fields) {
             if (err) throw err;
             res.json(result);
-            console.log("Producto encontrado");
         });
 
     }
@@ -26,7 +25,6 @@ class ProductoController {
         const producto = await pool.query("SELECT * FROM `producto` WHERE nombre like '%"+nombre+"%'", function (err, result, fields) {
             if (err) throw err;
             res.json(result);
-            console.log("Producto encontrado");
         });
 
     }
@@ -35,23 +33,21 @@ class ProductoController {
         const producto = await pool.query('SELECT * FROM tipo_producto', function (err, result, fields) {
             if (err) throw err;
             res.json(result);
-            console.log("Tipos de producto encontrados");
         });
 
     }
 
-
     public async create(req: Request, res: Response): Promise<void> {
         const producto = req.body
-        console.log(producto);
-        await pool.query("INSERT INTO `producto`(`nombre`, `tipo_producto`, `descripcion`, `pvp_unidad`, `stock`, `imagen`) VALUES ('"+producto.nombre+"',"+producto.tipo_producto+",'"+producto.descripcion+"',"+producto.pvp_unidad+","+producto.stock+",'"+producto.imagen+"')");
-        res.json({ message: 'creando un producto' });
+        await pool.query("INSERT INTO `producto`(`nombre`, `tipo_producto`, `descripcion`, `pvp_unidad`, `imagen`) VALUES ('"+producto.nombre+"',"+parseInt(producto.tipo_producto)+",'"+producto.descripcion+"',"+producto.pvp_unidad+",'"+producto.imagen+"')");
+        res.json({ message: 'Producto creado' });
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
         await pool.query('DELETE FROM PRODUCTO WHERE id = ?', [id]);
-        res.json({ message: 'Producto borrado: ' + req.params.id });
+
+        res.json({ message: 'Producto eliminado correctamente ' });
     }
 
     public async udpate(req: Request, res: Response): Promise<void> {
@@ -60,5 +56,5 @@ class ProductoController {
         res.json({ message: 'Producto actualizado correctamente' });
     }
 }
-
+ 
 export const productoController = new ProductoController();

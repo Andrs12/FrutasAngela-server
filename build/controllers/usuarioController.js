@@ -68,12 +68,10 @@ var UsuarioController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        console.log(id);
                         return [4 /*yield*/, database_1.default.query('SELECT * FROM USUARIO WHERE id = ?', id, function (err, result, fields) {
                                 if (err)
                                     throw err;
                                 res.json(result);
-                                console.log("Usuario encontrado");
                             })];
                     case 1:
                         usuario = _a.sent();
@@ -86,9 +84,14 @@ var UsuarioController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var jwt, decoded;
             return __generator(this, function (_a) {
-                jwt = require('jsonwebtoken');
-                decoded = jwt.verify(req.body.token, keys_1.default.jwt.key);
-                res.json(decoded);
+                try {
+                    jwt = require('jsonwebtoken');
+                    decoded = jwt.verify(req.body.token, keys_1.default.jwt.key);
+                    res.json(decoded);
+                }
+                catch (error) {
+                    res.json({ message: "Token invalido" });
+                }
                 return [2 /*return*/];
             });
         });
@@ -100,22 +103,7 @@ var UsuarioController = /** @class */ (function () {
                     case 0: return [4 /*yield*/, database_1.default.query('INSERT INTO USUARIO SET ?', [req.body])];
                     case 1:
                         _a.sent();
-                        console.log(req.body);
                         res.json({ message: 'Creando un usuario' });
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UsuarioController.prototype.createCarro = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1.default.query('INSERT INTO carrito VALUES()')];
-                    case 1:
-                        _a.sent();
-                        console.log(req.body);
-                        res.json({ message: 'Carrito Creado' });
                         return [2 /*return*/];
                 }
             });
@@ -148,7 +136,6 @@ var UsuarioController = /** @class */ (function () {
                         return [4 /*yield*/, database_1.default.query('UPDATE USUARIO SET ? WHERE id = ?', [usuario, usuario.id])];
                     case 1:
                         _a.sent();
-                        console.log("Usuario actualizado");
                         res.json({ message: 'Usuario actualizado' });
                         return [2 /*return*/];
                 }
@@ -157,17 +144,22 @@ var UsuarioController = /** @class */ (function () {
     };
     UsuarioController.prototype.login = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var email, contrasena, usuario, consulta;
+            var email, contrasena, usuario, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         email = req.body.email;
                         contrasena = req.body.contrasena;
                         console.log(email, contrasena);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        console.log("ANTES DE LA CONSULTA-------");
                         return [4 /*yield*/, database_1.default.query("SELECT * FROM USUARIO WHERE email = '" + email + "' and contrasena = '" + contrasena + "'", function (err, result, fields) {
-                                if (err)
-                                    throw err;
-                                if (result[0] != null) {
+                                console.log("DESPUES DE LA CONSULTA-------");
+                                console.log(result[0]);
+                                if (result[0] != undefined) {
+                                    console.log("NO DEBERIA DE SALIR ESTO");
                                     usuario = {
                                         id: result[0].id,
                                         nombre: result[0].nombre,
@@ -180,6 +172,7 @@ var UsuarioController = /** @class */ (function () {
                                         id_carrito: result[0].id_carrito
                                     };
                                     try {
+                                        console.log(usuario);
                                         var jwt = require('jsonwebtoken');
                                         var token_1 = jwt.sign(usuario, keys_1.default.jwt.key);
                                         console.log("token firmado");
@@ -193,12 +186,19 @@ var UsuarioController = /** @class */ (function () {
                                     }
                                 }
                                 else {
+                                    console.log("USUARIO NO ENCONTRADO");
                                     res.json({ message: "usuario invalido" });
                                 }
                             })];
-                    case 1:
-                        consulta = _a.sent();
-                        return [2 /*return*/];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        console.log("CONSULTA INVALIDA");
+                        res.json({ message: "Consulta invalida" });
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -214,7 +214,6 @@ var UsuarioController = /** @class */ (function () {
                                 if (err)
                                     throw err;
                                 res.json(result);
-                                console.log("Direcciones del usuario:", id, "encontradas");
                             })];
                     case 1:
                         usuario = _a.sent();
@@ -230,7 +229,6 @@ var UsuarioController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         direccion = req.body;
-                        console.log(direccion);
                         return [4 /*yield*/, database_1.default.query("INSERT INTO `direccion`(`direccion`, `id_usuario`) VALUES ('" + direccion.direccion + "'," + direccion.idUsuario + ")")];
                     case 1:
                         _a.sent();
@@ -258,48 +256,34 @@ var UsuarioController = /** @class */ (function () {
     };
     UsuarioController.prototype.register = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var usuario, jwt, token_2, error_1;
+            var usuario, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         usuario = req.body;
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `usuario` (`nombre`, `apellido1`, `apellido2`, `telefono`, `email`, `contrasena`, `rol`, `id_carrito`) VALUES ('" + usuario.nombre + "', '" + usuario.apellido1 + "', '" + usuario.apellido2 + "', '" + usuario.telefono + "', '" + usuario.email + "', '" + usuario.contrasena + "', 2, (SELECT max(id) from usuario as us))")];
+                        return [4 /*yield*/, database_1.default.query("SELECT * FROM USUARIO WHERE email = '" + usuario.email + "'", function (err, result, fields) {
+                                console.log("SELECT * FROM USUARIO WHERE email = '" + usuario.email + "'");
+                                console.log(result[0]);
+                                if (result[0] == undefined) {
+                                    database_1.default.query("INSERT INTO `usuario` (`nombre`, `apellido1`, `apellido2`, `telefono`, `email`, `contrasena`, `rol`, `id_carrito`) VALUES ('" + usuario.nombre + "', '" + usuario.apellido1 + "', '" + usuario.apellido2 + "', '" + usuario.telefono + "', '" + usuario.email + "', '" + usuario.contrasena + "', 2, (SELECT max(id) from usuario as us)+1)");
+                                    res.json({ message: "Usuario creado correctamente" });
+                                }
+                                else {
+                                    res.json({ message: "Este usuario ya existe" });
+                                }
+                            })];
                     case 1:
                         _a.sent();
-                        console.log("USUARIO INSERTADO----");
-                        try {
-                            console.log(usuario);
-                            jwt = require('jsonwebtoken');
-                            token_2 = jwt.sign(usuario, keys_1.default.jwt.key);
-                            res.json(({ token: token_2 }));
-                        }
-                        catch (error) {
-                            console.log("ERROR al encriptar");
-                            res.json(({ message: "No se ha podido encriptar" }));
-                        }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_1 = _a.sent();
-                        console.log("ERROR al realizar la insercion");
+                        error_2 = _a.sent();
+                        res.json(({ message: "No se ha podido crear el usuario" }));
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
-    };
-    /* METODOS DE AYUDA */
-    UsuarioController.prototype.encriptar = function (usuario) {
-        try {
-            console.log(usuario);
-            var jwt = require('jsonwebtoken');
-            var token_3 = jwt.sign(usuario, keys_1.default.jwt.key);
-            return ({ token: token_3 });
-        }
-        catch (error) {
-            console.log("ERROR al encriptar");
-            return ({ message: "No se ha podido encriptar" });
-        }
     };
     UsuarioController.prototype.crearCarrito = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {

@@ -9,9 +9,11 @@ var CarritoRoutes = /** @class */ (function () {
     }
     CarritoRoutes.prototype.config = function () {
         this.router.get('/carritoProductos/:id', carritoController_1.carritoController.getCarritoProductos);
-        this.router.post('/comprar/', carritoController_1.carritoController.insertarVenta);
         this.router.post('/carritoProducto', carritoController_1.carritoController.insertarProductoCarro);
         this.router.delete('/carritoProducto/:id', carritoController_1.carritoController.eliminarProductoCarro);
+        this.router.post('/venta', carritoController_1.carritoController.insertarVenta);
+        this.router.post('/ventaProducto', carritoController_1.carritoController.insertarVentaProducto);
+        this.router.get('/resumenVentas', carritoController_1.carritoController.resumenVentas);
     };
     return CarritoRoutes;
 }());

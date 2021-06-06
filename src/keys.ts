@@ -2,12 +2,12 @@ export default {
     database: {
         host: 'localhost',
         user: 'root',
-        password: '',
-        database: 'FRUTAS_ANGELA'
+        password: '', 
+        database: 'frutas_angela'
     },
 
     jwt: {
         key: "pipo1234"
     }
 
-}
+}  

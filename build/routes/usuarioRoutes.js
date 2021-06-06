@@ -19,7 +19,6 @@ var UsuarioRoutes = /** @class */ (function () {
         this.router.post('/login', usuarioController_1.usuarioController.login);
         this.router.post('/register', usuarioController_1.usuarioController.register);
         this.router.post('/descifrar', usuarioController_1.usuarioController.getOneByToken);
-        this.router.post('/createCarro', usuarioController_1.usuarioController.createCarro);
     };
     return UsuarioRoutes;
 }());

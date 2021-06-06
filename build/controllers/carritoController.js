@@ -52,12 +52,10 @@ var CarritoController = /** @class */ (function () {
                     case 0:
                         id = req.params.id;
                         console.log(id);
-                        return [4 /*yield*/, database_1.default.query('SELECT producto.id, carrito_producto.id as carrito_id_producto ,producto.nombre, producto.pvp_unidad, producto.imagen ,carrito_producto.unidades, (producto.pvp_unidad*carrito_producto.unidades) AS total FROM producto, carrito_producto, carrito WHERE producto.id = carrito_producto.id_producto AND carrito.id = carrito_producto.carrito_id AND carrito.id =?', id, function (err, result, fields) {
+                        return [4 /*yield*/, database_1.default.query('SELECT producto.id, carrito_producto.id as carrito_id_producto ,producto.nombre, producto.pvp_unidad, producto.imagen ,carrito_producto.unidades, (producto.pvp_unidad*carrito_producto.unidades) AS total FROM producto, carrito_producto, usuario WHERE producto.id = carrito_producto.id_producto AND usuario.id_carrito = carrito_producto.carrito_id AND usuario.id_carrito = ?', id, function (err, result, fields) {
                                 if (err)
                                     throw err;
-                                console.log(result);
                                 res.json(result);
-                                console.log("Productos carrito encontrado");
                             })];
                     case 1:
                         usuario = _a.sent();
@@ -68,38 +66,15 @@ var CarritoController = /** @class */ (function () {
     };
     CarritoController.prototype.insertarVenta = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var datos, i;
+            var datos;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         datos = req.body;
-                        console.log(datos);
-                        console.log("INSERTANDO CARRITO EN VENTA");
-                        console.log(datos[datos.length - 1].id_carrito);
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta`(`ID_DIRECCION`) VALUES (" + datos[datos.length - 1].id_direccion + ")")];
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta`(`ID_DIRECCION`) VALUES (" + datos.id_direccion + ")")];
                     case 1:
                         _a.sent();
-                        console.log("VENTA INSERTADA");
-                        i = 0;
-                        _a.label = 2;
-                    case 2:
-                        if (!(i < datos.length)) return [3 /*break*/, 5];
-                        if (!(datos[i].ID_Direccion == null)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta_producto`(`ID_VENTA`, `ID_PRODUCTO`, `CANTIDAD`) VALUES ((SELECT MAX(ID) FROM venta) ," + datos[i].id + "," + datos[i].unidades + ")")];
-                    case 3:
-                        _a.sent();
-                        console.log("PRODUCTO_VENTA INSERTADO");
-                        _a.label = 4;
-                    case 4:
-                        i++;
-                        return [3 /*break*/, 2];
-                    case 5:
-                        console.log("Productos Insertados");
-                        return [4 /*yield*/, database_1.default.query("DELETE FROM `CARRITO_PRODUCTO` WHERE CARRITO_ID = " + datos[datos.length - 1].id_carrito)];
-                    case 6:
-                        _a.sent();
-                        console.log("Produtos carro " + datos[datos.length - 1].id_carrito + "eliminados");
-                        console.log("Compla completada");
+                        res.json({ message: "true" });
                         return [2 /*return*/];
                 }
             });
@@ -107,8 +82,50 @@ var CarritoController = /** @class */ (function () {
     };
     CarritoController.prototype.insertarVentaProducto = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var datos, query, i;
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        datos = req.body;
+                        query = "";
+                        console.log(datos);
+                        console.log(datos.length);
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < datos.length - 1)) return [3 /*break*/, 4];
+                        query += "INSERT INTO `venta_producto`(`ID_VENTA`, `ID_PRODUCTO`, `CANTIDAD`) VALUES ((SELECT MAX(ID) FROM venta) ," + datos[i].id + "," + datos[i].unidades + ");\n";
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `venta_producto`(`ID_VENTA`, `ID_PRODUCTO`, `CANTIDAD`) VALUES ((SELECT MAX(ID) FROM venta) ," + datos[i].id + "," + datos[i].unidades + ")")];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        console.log(query);
+                        return [4 /*yield*/, database_1.default.query("DELETE FROM `CARRITO_PRODUCTO` WHERE CARRITO_ID = " + datos[datos.length - 1].id_carrito)];
+                    case 5:
+                        _a.sent();
+                        res.json({ message: "Productos insertados correctamente" });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CarritoController.prototype.resumenVentas = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, database_1.default.query("SELECT venta_producto.id, venta_producto.id_venta, venta.fecha, producto.nombre, venta_producto.cantidad, (venta_producto.cantidad*producto.pvp_unidad) as total from venta_producto, venta, producto where venta_producto.id_producto = producto.id and venta_producto.id_venta = venta.ID order by venta.id", function (err, result, fields) {
+                            if (err)
+                                throw err;
+                            res.json(result);
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -135,8 +152,7 @@ var CarritoController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         id = req.params.id;
-                        console.log(id);
-                        return [4 /*yield*/, database_1.default.query("DELETE FROM `carrito_producto` WHERE ID = " + id)];
+                        return [4 /*yield*/, database_1.default.query("DELETE FROM `carrito_producto` WHERE id = " + id)];
                     case 1:
                         _a.sent();
                         res.json({ message: "Producto eliminado del carrito" });

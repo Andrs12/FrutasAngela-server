@@ -71,7 +71,6 @@ var ProductoController = /** @class */ (function () {
                                 if (err)
                                     throw err;
                                 res.json(result);
-                                console.log("Producto encontrado");
                             })];
                     case 1:
                         producto = _a.sent();
@@ -91,7 +90,6 @@ var ProductoController = /** @class */ (function () {
                                 if (err)
                                     throw err;
                                 res.json(result);
-                                console.log("Producto encontrado");
                             })];
                     case 1:
                         producto = _a.sent();
@@ -109,7 +107,6 @@ var ProductoController = /** @class */ (function () {
                             if (err)
                                 throw err;
                             res.json(result);
-                            console.log("Tipos de producto encontrados");
                         })];
                     case 1:
                         producto = _a.sent();
@@ -125,11 +122,10 @@ var ProductoController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         producto = req.body;
-                        console.log(producto);
-                        return [4 /*yield*/, database_1.default.query("INSERT INTO `producto`(`nombre`, `tipo_producto`, `descripcion`, `pvp_unidad`, `stock`, `imagen`) VALUES ('" + producto.nombre + "'," + producto.tipo_producto + ",'" + producto.descripcion + "'," + producto.pvp_unidad + "," + producto.stock + ",'" + producto.imagen + "')")];
+                        return [4 /*yield*/, database_1.default.query("INSERT INTO `producto`(`nombre`, `tipo_producto`, `descripcion`, `pvp_unidad`, `imagen`) VALUES ('" + producto.nombre + "'," + parseInt(producto.tipo_producto) + ",'" + producto.descripcion + "'," + producto.pvp_unidad + ",'" + producto.imagen + "')")];
                     case 1:
                         _a.sent();
-                        res.json({ message: 'creando un producto' });
+                        res.json({ message: 'Producto creado' });
                         return [2 /*return*/];
                 }
             });
@@ -145,7 +141,7 @@ var ProductoController = /** @class */ (function () {
                         return [4 /*yield*/, database_1.default.query('DELETE FROM PRODUCTO WHERE id = ?', [id])];
                     case 1:
                         _a.sent();
-                        res.json({ message: 'Producto borrado: ' + req.params.id });
+                        res.json({ message: 'Producto eliminado correctamente ' });
                         return [2 /*return*/];
                 }
             });

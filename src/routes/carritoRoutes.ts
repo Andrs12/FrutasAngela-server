@@ -12,9 +12,11 @@ class CarritoRoutes {
 
     config(): void {
         this.router.get('/carritoProductos/:id', carritoController.getCarritoProductos);
-        this.router.post('/comprar/', carritoController.insertarVenta);
         this.router.post('/carritoProducto', carritoController.insertarProductoCarro);
         this.router.delete('/carritoProducto/:id', carritoController.eliminarProductoCarro);
+        this.router.post('/venta', carritoController.insertarVenta);
+        this.router.post('/ventaProducto', carritoController.insertarVentaProducto);
+        this.router.get('/resumenVentas', carritoController.resumenVentas); 
     }
 }
 
