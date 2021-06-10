@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
 import pool from '../database';
 class CarritoController {
-
-
-
-
     public async getCarritoProductos(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
         console.log(id);
